@@ -69,7 +69,11 @@ joystick_scan:
 	ldx #0
 l2:	ldy #8
 l1:	lda #bit_jclk
-	trb nes_data  ; Drive NES clock low (NES controller doesn't change when low)
+	trb nes_data  ; Drive NES clock low (NES controller doesn't change when low;
+					; - unless it is a newer clone which just simulates a serial register in an mcu,
+					; in which case we need more time here to allow the data to settle before reading).
+	pha			; 3T = 375ns
+	pla			; 4T = 500ns
 
 	lda nes_data ; Read all controller bits
 	pha
